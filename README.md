@@ -18,46 +18,59 @@ This skill packages the Hermes Agent learning-loop patterns as a portable SKILL.
 
 ## What it does
 
-Installs a closed self-improvement loop into any compatible agent:
+Installs Hermes Agent's closed learning loop into any agent. The skill is **agent-agnostic**: it describes behaviour, never a specific tool, hook or path, and a one-page table maps each capability to whatever your agent provides.
 
-- **Auto skill creation** — after complex tasks, the agent drafts a reusable skill for operator review
-- **Periodic self-checks** — every 15 tool calls, pause and evaluate what's worth persisting
-- **Skill refinement** — when a skill is outdated, propose a targeted patch; operator approves before it applies
-- **Memory flush before context loss** — persists what matters before compaction or session reset
-- **Memory capacity management** — tiered thresholds (80% / 90% / 95%) with consolidation rules
-- **Cross-session recall** — search history before asking anyone to repeat themselves
-- **Active user model refinement** — preferences and corrections build up over time
-- **Compound learning** — every mistake becomes a structured lesson; repeated errors escalate
-- **Skill versioning and lifecycle** — semantic versioning, deprecation, rollback support
-- **Observability** — monthly metrics: skills proposed, approved, reverted, recall hit rate
-- **Governance hierarchy** — explicit conflict resolution order when skills, memory, and lessons disagree
-- **Inter-agent skill sharing** — export/import approved skills across agents with operator-gated activation
+- **A review pass after every task.** Once the answer is delivered, the agent reviews the conversation and updates its skills and memory (memory every 10 user turns, skills every 15 tool iterations, plus every session boundary and compaction). It never competes with the work.
+- **Skills first, memory last.** What the agent learns while doing a task goes into that task's skill. Memory holds only the few facts every session needs, in two budgeted stores (user profile and agent notes).
+- **Class-level skills, written as lessons, not logs.** Procedure first, one rule per lesson with the reason, no ticket numbers or diaries, fixed in place when wrong.
+- **A never-capture list.** Environment failures, "tool X is broken" claims, transient errors, one-off tasks and unresolved dead ends never become rules.
+- **Recall before asking.** Search past sessions before making anyone repeat themselves.
+- **A user model that sharpens.** Corrections and preferences land in the skill that governs that work.
+- **Approval gates and curation.** New skills and skill patches are staged for the operator by default; unused skills go stale after 14 days and are archived (never deleted) after 30.
+- **Audit and rollback.** A ledger of every write, prior versions kept, monthly metrics, repeat errors escalated.
+
+---
+
+## What's new in v2.0.0 (22 Oct 2026)
+
+Rebuilt against the Hermes Agent source at commit `81a55437`. v1 described the April 2026 Hermes; since then Hermes has:
+
+- moved learning into a **background review** that runs after the reply, with its own prompts (now adapted into section 1);
+- adopted **"skills first, memory last"** and **declarative memory** (facts, not orders);
+- defined the **skill shape**: class-level umbrellas, `references/` · `templates/` · `scripts/`, lessons not logs;
+- added a **never-capture list** and **read-before-write** for skill patches;
+- added a **curator** (stale → archived, pins, never delete) and an **audit ledger** with rollback;
+- added `write_approval` gates for memory and skills.
+
+v2 is also **agent-agnostic**: runtime-specific paths and hook names have moved out of `SKILL.md` into the install notes below.
+
+The skill's name now matches the repo and the install command (`hermes-agent-as-a-skill-file`; v1 was `self-improving-agent`).
 
 ---
 
 ## Install
+
+Put the folder in your agent's skills directory, then fill in the **Map it to your agent** table at the end of `SKILL.md` once. Notes for common runtimes:
 
 ### Claude Code
 ```bash
 mkdir -p ~/.claude/skills
 git clone https://github.com/Speedrunlab/hermes-agent-as-a-skill-file.git ~/.claude/skills/hermes-agent-as-a-skill-file
 ```
-Then run: `/hermes-agent-as-a-skill-file`
+Then run: `/hermes-agent-as-a-skill-file`. Review pass: a background subagent or the end of the turn. Session boundary and compaction: the `Stop` and `PreCompact` hooks. Project-scoped install: `.claude/skills/hermes-agent-as-a-skill-file/`.
 
 ### OpenClaw
 ```bash
 mkdir -p ~/.openclaw/skills
 git clone https://github.com/Speedrunlab/hermes-agent-as-a-skill-file.git ~/.openclaw/skills/hermes-agent-as-a-skill-file
 ```
-OpenClaw picks it up automatically on next session.
+OpenClaw picks it up automatically on next session. Use the daily log `memory/YYYY-MM-DD.md` as the audit log.
 
 ### NemoClaw
 Place in `.agents/skills/hermes-agent-as-a-skill-file/SKILL.md` within your NemoClaw directory.
 
 ### Hermes Agent
-```bash
-~/.hermes/skills/hermes-agent-as-a-skill-file/SKILL.md
-```
+No install needed: Hermes runs this loop natively. The matching config keys are `memory.nudge_interval` and `skills.creation_nudge_interval` (review triggers), `memory.write_approval` and `skills.write_approval` (approval gates), the `curator:` block (curation), and `auxiliary.background_review` (run the review on a cheaper model).
 
 ### Any AgentSkills-compatible framework
 Copy `SKILL.md` into your agent's skills directory, or load its contents into your agent's system prompt directly.
@@ -71,7 +84,7 @@ Copy `SKILL.md` into your agent's skills directory, or load its contents into yo
 | Claude Code | ✅ |
 | OpenClaw | ✅ |
 | NemoClaw | ✅ |
-| Hermes Agent | ✅ |
+| Hermes Agent | Built in (config keys above) |
 | Any AgentSkills-compatible framework | ✅ |
 | Any LLM with system prompt access | ✅ (manual load) |
 
@@ -83,25 +96,26 @@ Before installing, verify your platform provides:
 
 | Capability | Required? |
 |------------|-----------|
-| Persistent memory write | Yes |
-| Memory or history search | Yes |
-| Writable file system | Yes |
+| Persistent memory store with a size budget | Yes |
+| Search over past sessions or logs | Yes |
+| Writable skills directory | Yes |
 | User-facing message channel | Yes |
-| Pre-reset or pre-compaction hook | Recommended |
+| A way to run work after the reply (post-turn hook or background subagent) | Recommended |
+| Pre-compaction or session-end hook | Recommended |
 | Scheduler or heartbeat | Recommended |
 | Daily log or persistent audit store | Recommended |
 
-If a recommended capability is missing, the relevant section degrades gracefully to manual triggers. Nothing breaks.
+If a recommended capability is missing, that trigger falls back to the end of the session. Nothing breaks.
 
 ---
 
 ## Credits
 
-Inspired by the Hermes Agent learning-loop patterns by [Nous Research](https://github.com/nousresearch/hermes-agent) (MIT licence).
+Based on [Hermes Agent](https://github.com/nousresearch/hermes-agent) by Nous Research (MIT licence), reviewed at commit `81a55437`. The review prompts, skill-shape rules and never-capture list are adapted from its source.
 
 Adapted and packaged as a portable skill file by [Speedrun AI Labs](https://www.speedrunlab.ai).
 
-**Not an official Nous Research artifact.** This is a derivative work inspired by publicly documented Hermes Agent design patterns. Attribution, not affiliation.
+**Not an official Nous Research artifact.** This is a derivative work based on the Hermes Agent source and documentation. Attribution, not affiliation.
 
 ---
 
