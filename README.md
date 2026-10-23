@@ -151,6 +151,7 @@ Adapted and packaged as a portable skill file by [Speedrun AI Labs](https://www.
 This skill is part of the open-source skill library at [speedrunlab.ai](https://www.speedrunlab.ai).
 
 Other skills:
+- [/reverse-engineer-anything-self-learning-loop](https://github.com/Speedrunlab/reverse-engineer-anything-self-learning-loop), examine a product you are authorised to rebuild, build your own, and improve it against the original until it is 100% there
 - [/reverse-engineer-anything](https://github.com/Speedrunlab/reverse-engineer-anything), authorised analysis of shipped software with standard open-source tools
 - [/deep-audit](https://github.com/Speedrunlab/deep-audit), four-phase code auditor with evidence standards
 - [/no-slop-writing](https://github.com/Speedrunlab/no-slop-writing), eliminates AI-speak from generated text (American English)
