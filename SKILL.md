@@ -1,7 +1,7 @@
 ---
 name: hermes-agent-as-a-skill-file
 description: Hermes Agent's self-improvement loop for any agent. Reviews its own work after each task, turns corrections and hard-won workflows into class-level skills, keeps a small curated memory, recalls past sessions before asking anyone to repeat themselves, learns a skill from a source on request, scans any skill from outside before it is installed, and curates its skill library over time. Agent-agnostic port of Nous Research's Hermes Agent (MIT) by Speedrun AI Labs. Use when an agent should learn across sessions, or when the user says "remember this", "learn from this", "learn this", "update your skills" or "stop doing that".
-version: 2.1.0
+version: 2.1.1
 author: Speedrun AI Labs
 license: MIT
 compatibility: Any agent with a persistent memory store, a writable skills directory and search over past sessions.
@@ -271,5 +271,7 @@ Place this folder in your agent's skills directory, or load `SKILL.md` into its 
 ## CREDITS
 
 Based on Hermes Agent by Nous Research (github.com/NousResearch/hermes-agent, MIT licence), reviewed at commit `687e00e0`. The review prompts, skill-shape rules, never-capture list and learn-from-source standards are adapted from its source.
+
+Inspired by Hermes Agent by Nous Research (github.com/NousResearch/hermes-agent). Not affiliated.
 
 Adapted and packaged as a portable skill file by Speedrun AI Labs (speedrunlab.ai).

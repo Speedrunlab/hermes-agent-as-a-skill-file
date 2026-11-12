@@ -2,7 +2,7 @@
 
 **Hermes Agent as a skill file: Upgrade your existing agent, no need to migrate.**
 
-Free and open source · MIT Licence · Built by [Speedrun AI Labs](https://www.speedrunlab.ai), Sydney, Australia · Inspired by [Nous Research](https://github.com/nousresearch/hermes-agent) (MIT)
+Free and open source · MIT Licence · Built by [Speedrun AI Labs](https://www.speedrunlab.ai), Sydney, Australia · Inspired by [Nous Research](https://github.com/nousresearch/hermes-agent) (MIT). Not affiliated.
 
 ---
 
@@ -32,6 +32,10 @@ Installs Hermes Agent's closed learning loop into any agent. The skill is **agen
 - **Audit and rollback.** A ledger of every write, prior versions kept, monthly metrics, repeat errors escalated, and everything learned listable and editable by the operator.
 
 ---
+
+## What's new in v2.1.1 (12 Nov 2026)
+
+Housekeeping only: added `CHANGELOG.md`, bumped the version to 2.1.1, and added "Not affiliated." to the inspiration credit. No behaviour change.
 
 ## What's new in v2.1.0 (23 Oct 2026)
 
@@ -139,6 +143,8 @@ If a recommended capability is missing, that trigger falls back to the end of th
 ## Credits
 
 Based on [Hermes Agent](https://github.com/nousresearch/hermes-agent) by Nous Research (MIT licence), reviewed at commit `687e00e0`. The review prompts, skill-shape rules, never-capture list and learn-from-source standards are adapted from its source.
+
+Inspired by Hermes Agent by Nous Research. Not affiliated.
 
 Adapted and packaged as a portable skill file by [Speedrun AI Labs](https://www.speedrunlab.ai).
 
